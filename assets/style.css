@@ -1,3 +1,17 @@
 .custom-bg {
   background-color: rgb(138, 251, 251);
 }
+
+.custom-images {
+  width: 100px;
+}
+
+h4 {
+  margin:0px;
+  padding:0px;
+  display:inline;
+}
+p {
+  margin:0px;
+
+}

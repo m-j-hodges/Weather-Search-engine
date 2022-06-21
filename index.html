@@ -22,46 +22,46 @@
         <input class="form-control border-success" type="text" id="cityInput" placeholder="Los Angeles,CA">
         <label for="cityInput"></label>
         <div class="d-grid gap-2"><button class="btn btn-primary btn-lg my-2" id="searchBtn" type="submit">search</button></div>
-        <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Austin</button></div>
-        <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">New York</button></div>
-        <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Miami</button></div>
-        <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Washington D.C.</button></div>
-        <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Seattle</button></div>
-        <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Toronto</button></div>
-        <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Sacramento</button></div>
-        <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Phoenix</button></div>
+        <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Austin,TX</button></div>
+        <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">New York,NY</button></div>
+        <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Miami,FL</button></div>
+        <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Washington, D.C.</button></div>
+        <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Seattle,WA</button></div>
+        <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Toronto,ON</button></div>
+        <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Sacramento,CA</button></div>
+        <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Phoenix,AZ</button></div>
       </div>
       <div class="col-sm-9">
         <div class="border border-primary bg-info" id="weather-data"></div>
-        <div class="row">
-        <div class="card col-sm-2">
-          <img src="..." class="card-img-top" alt="...">
+        <div class="row mt-3">
+        <div class="card col-sm-3 mx-2" id="weatherAhead1">
+          <img src="" class="custom-images" id="forecast-img-1" alt="...">
           <div class="card-body">
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <p class="card-text" id="forecastText1">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
           </div>
         </div>
-        <div class="card col-sm-2">
-          <img src="..." class="card-img-top" alt="...">
+        <div class="card col-sm-3 mx-2" id="weatherAhead2">
+          <img src="" class="custom-images" id="forecast-img-2" alt="...">
           <div class="card-body">
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <p class="card-text" id="forecastText2">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
           </div>
         </div>
-        <div class="card col-sm-2">
-          <img src="..." class="card-img-top" alt="...">
+        <div class="card col-sm-3 mx-2" id="weatherAhead3">
+          <img src="" class="custom-images" id="forecast-img-3" alt="...">
           <div class="card-body">
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <p class="card-text" id="forecastText3">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
           </div>
         </div>
-        <div class="card col-sm-2">
-          <img src="..." class="card-img-top" alt="...">
+        <div class="card col-sm-3 mx-2" id="weatherAhead4">
+          <img src="" class="custom-images" id="forecast-img-4" alt="...">
           <div class="card-body">
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <p class="card-text" id="forecastText4">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
           </div>
         </div>
-        <div class="card col-sm-2">
-          <img src="..." class="card-img-top" alt="...">
+        <div class="card col-sm-3 mx-2" id="weatherAhead5">
+          <img src="" class="custom-images" id="forecast-img-5" alt="...">
           <div class="card-body">
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+            <p class="card-text" id="forecastText5">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
           </div>
         </div>
       </div>
@@ -84,7 +84,7 @@
 
 
 
-
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script type="text/javascript" src="./assets/script.js"></script>
 </body>
