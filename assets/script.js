@@ -53,7 +53,7 @@ $('#weather-data').html(`<div class="card" style="width: 18rem;>\
 <div class="card-body">\
   <h5 class="card-title"></h5>\
   <h4 class="card-subtitle mb-2 text-muted">${resultCityName} (${moment().format('M/DD/YY')})</h4>\
-  <p class="card-text">Current temperature: ${Math.round(cityTemp -273)*9/5+32}&#176;C </p>\
+  <p class="card-text">Current temperature: ${Math.round(cityTemp -273)*9/5+32}&#176;F </p>\
   <p class="card-text">Wind Speed: ${Math.round(windSpeed)} MPH</p>\
   <p class="card-text">Humidity: ${cityHumidity}&#37;</p>\
 </div>\
