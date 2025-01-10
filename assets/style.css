@@ -1,3 +1,7 @@
+body {
+  box-sizing:border-box;
+}
+
 .custom-bg {
   background-color: rgb(138, 251, 251);
 }
@@ -13,5 +17,75 @@ h4 {
 }
 p {
   margin:0px;
+}
 
+.custom-container {
+  width: 60%;
+  height: 200px;
+
+
+}
+
+.low-uvi {
+  background-color:#6AA84F;
+  font-weight: bold;
+  border-radius: 3px;
+}
+.mid-uvi {
+  background-color: yellow;
+  font-weight: bold;
+  border-radius: 3px;
+}
+.high-uvi {
+  background-color: orangered;
+  font-weight: bold;
+  border-radius: 3px;
+}
+.very-high-uvi {
+  background-color: red;
+  font-weight: bold;
+  border-radius: 3px;
+}
+.ultra-uvi {
+  background-color: purple;
+  font-weight: bold;
+  border-radius: 3px;
+}
+.tooltips {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black;
+}
+
+.tooltips .tooltiptext {
+  visibility: hidden;
+  width: 300px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  position: absolute;
+  z-index: 1;
+  bottom: 100%;
+  left: 40%;
+  margin-left: -60px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltips .tooltiptext::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.tooltips:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
 }

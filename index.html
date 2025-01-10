@@ -19,27 +19,23 @@
       <div class="col-sm-3">
         <p class="fw-bolder fs-3">Search for a City:
         </p>
-        <input class="form-control border-success" type="text" id="cityInput" placeholder="Los Angeles,CA">
+        <input class="form-control border-success" type="text" id="cityInput" placeholder="Los Angeles,CA" data-toggle="tooltip" data-placement="top" title="Enter a city with the format {city},{state}">
         <label for="cityInput"></label>
         <div class="d-grid gap-2"><button class="btn btn-primary btn-lg my-2" id="searchBtn" type="submit">search</button></div>
+        <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Las Vegas,NV</button></div>
         <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Austin,TX</button></div>
         <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">New York,NY</button></div>
         <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Miami,FL</button></div>
         <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Washington, D.C.</button></div>
         <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Seattle,WA</button></div>
-        <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Toronto,ON</button></div>
         <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Sacramento,CA</button></div>
         <div class="d-grid gap-2"><button class="btn btn-outline-secondary my-2" type="submit">Phoenix,AZ</button></div>
       </div>
+
       <div class="col-sm-9">
+
         <div class="border border-primary bg-info" id="weather-data"></div>
         <div class="row mt-3">
-        <div class="card col-sm-3 mx-2" id="weatherAhead1">
-          <img src="" class="custom-images" id="forecast-img-1" alt="...">
-          <div class="card-body">
-            <p class="card-text" id="forecastText1"></p>
-          </div>
-        </div>
         <div class="card col-sm-3 mx-2" id="weatherAhead2">
           <img src="" class="custom-images" id="forecast-img-2" alt="...">
           <div class="card-body">
@@ -62,6 +58,36 @@
           <img src="" class="custom-images" id="forecast-img-5" alt="...">
           <div class="card-body">
             <p class="card-text" id="forecastText5"></p>
+          </div>
+        </div>
+        <div class="card col-sm-3 mx-2" id="weatherAhead6">
+          <img src="" class="custom-images" id="forecast-img-6" alt="...">
+          <div class="card-body">
+            <p class="card-text" id="forecastText6"></p>
+          </div>
+        </div>
+        <div class="card col-sm-3 mx-2" id="weatherAhead7">
+          <img src="" class="custom-images" id="forecast-img-7" alt="...">
+          <div class="card-body">
+            <p class="card-text" id="forecastText7"></p>
+          </div>
+        </div>
+        <div class="card col-sm-3 mx-2" id="weatherAhead8">
+          <img src="" class="custom-images" id="forecast-img-8" alt="...">
+          <div class="card-body">
+            <p class="card-text" id="forecastText8"></p>
+          </div>
+        </div>
+        <div class="card col-sm-3 mx-2" id="weatherAhead9">
+          <img src="" class="custom-images" id="forecast-img-9" alt="...">
+          <div class="card-body">
+            <p class="card-text" id="forecastText9"></p>
+          </div>
+        </div>
+        <div class="card col-sm-3 mx-2" id="weatherAhead10">
+          <img src="" class="custom-images" id="forecast-img-10" alt="...">
+          <div class="card-body">
+            <p class="card-text" id="forecastText10"></p>
           </div>
         </div>
       </div>

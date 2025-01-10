@@ -1,6 +1,13 @@
 
 
-
+$("document").ready(() => {
+  document.addEventListener("keydown", (evt)=> {
+    console.log(evt.key)
+    if(evt.key == "Enter"){
+      startSearch();
+    }
+  })
+})
 
 var cityArray
 var cityName
@@ -14,9 +21,14 @@ var oneCallApiRequest
 $('#searchBtn').on("click", function(event) {
   startSearch(event)
 })
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip()
+})
+
   
 selectedCity = $('#cityInput').val();
-function startSearch() {
+async function startSearch() {
   debugger;
   $('.col-sm-3 h4').html('')
   $('.card-text').html('')
@@ -30,72 +42,84 @@ function startSearch() {
   cityName = selectedCity.split(",")[0];
   stateName = selectedCity.split(",")[1];
   debugger;
-  coordApiRequest = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName},${stateName}&limit=5&appid=5e4e76067c9efbd530372ae03978df87`
-  console.log(cityName)
-  console.log(stateName)
- weatherApiRequest = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&appid=5e4e76067c9efbd530372ae03978df87"
-fetch(weatherApiRequest)
-.then( function (response) {
-  return response.json();
+  coordApiRequest = `https://geocode.maps.co/search?q=${cityName},${stateName}&api_key=67816f5abff53064370654ipx8e37ed`
+
+let result = await fetch(coordApiRequest);
+if(!result.ok){
+  throw new Error(`Response status ${result.status} is bad.`)
+}
+const json = await result.json();
+
+var lat = json[0].lat;
+var long = json[0].lon;
+var targetCity = json[0].display_name.split(",")[0];
+
+// fetch grid office and grid x,y.
+let weatherRequest = `https://api.weather.gov/points/${lat},${long}`;
+// execute request
+var weatherGrid = await fetch(weatherRequest)
+.then((resp) => {
+  return resp.json()
 })
-.then(function(data) {
-  console.log(data);
-  resultCityName = data.name
-  coordLatitude = data.coord.lat
-  coordLongitude = data.coord.lon
-  cityTemp = data.main.temp
-  windSpeed = data.wind.speed
-  cityHumidity = data.main.humidity
-  
-  debugger;
+.then((data) => {
+  return data
+})
+const gridOffice = weatherGrid.properties.gridId;
+const gridCoordX = weatherGrid.properties.gridX;
+const gridCoordY = weatherGrid.properties.gridY;
+
+var newApiRequest = `https://api.weather.gov/gridpoints/${gridOffice}/${gridCoordX},${gridCoordY}/forecast`;
+// fetch the data we need from weather.
+let response = await fetch(newApiRequest)
+.then((resp) => {
+  return resp.json();
+}).then((data) => {
+  return data
+});
+var weatherData;
+if(response != null){
+  weatherData = response.properties.periods;
+}
 
 $('#weather-data').html(`<div class="card" style="width: 18rem;>\
 <div class="card-body">\
   <h5 class="card-title"></h5>\
-  <h4 class="card-subtitle mb-2 text-muted">${resultCityName} (${moment().format('M/DD/YY')})</h4>\
-  <p class="card-text">Current temperature: ${Math.round(cityTemp -273)*9/5+32}&#176;F </p>\
-  <p class="card-text">Wind Speed: ${Math.round(windSpeed)} MPH</p>\
-  <p class="card-text">Humidity: ${cityHumidity}&#37;</p>\
+  <h4 class="card-subtitle mb-2 text-muted">${targetCity} (${moment().format('M/DD/YY')})</h4>\
+  <p class="card-text">Current temperature: ${weatherData[0].temperature}&#176;${weatherData[0].temperatureUnit} </p>\
+  <p class="card-text">Wind Speed: ${weatherData[0].windSpeed}</p>\
 </div>\
 </div>`)
-oneCallApiRequest = `https://api.openweathermap.org/data/2.5/onecall?lat=${coordLatitude}&lon=${coordLongitude}&appid=5e4e76067c9efbd530372ae03978df87`
-return fetch(oneCallApiRequest)
-})
-.then(function(response) {
-  return response.json()
-})
-.then(function(data) {
-  console.log(data)
-  uvi = data.daily[0].uvi
-  $('.card-text')[2].after(`UV Index: ${uvi}`)
 
-  var DailyArray = data.daily
-  var dayAhead1 = data.daily[0]
-  var dayAhead2 = data.daily[1]
-  var dayAhead3 = data.daily[2]
-  var dayAhead4 = data.daily[3]
-  var dayAhead5 = data.daily[4]
- dayAhead1Weather = dayAhead1.weather[0].main
- dayAhead1Temp = data.daily[0].temp
- dayAhead1Temp = data.daily[1].temp
- dayAhead1Temp = data.daily[2].temp
- dayAhead1Temp = data.daily[3].temp
- dayAhead1Temp = data.daily[4].temp
- dayAhead1TempMorn = Math.floor(data.daily[0].temp.morn - 273)
-dayAhead1TempEven = Math.floor(data.daily[0].temp.eve - 273)
-dayAhead1TempMax = Math.floor(data.daily[0].temp.max - 273)
- dayAhead2TempMorn = Math.floor(data.daily[1].temp.morn - 273)
-dayAhead2TempEven = Math.floor(data.daily[1].temp.eve - 273)
-dayAhead2TempMax = Math.floor(data.daily[1].temp.max - 273)
-dayAhead1TempMornF = dayAhead1TempMorn * 9 / 5 + 32
-dayAhead1TempEvenF = dayAhead1TempEven * 9 / 5 + 32
-dayAhead1TempMaxF = dayAhead2TempMax * 9 / 5 + 32
-dayAhead2TempMornF = dayAhead2TempMorn * 9 / 5 + 32
-dayAhead2TempEvenF = dayAhead2TempEven * 9 / 5 + 32
-dayAhead2TempMaxF = dayAhead2TempMax * 9 / 5 + 32
-var dayAhead1Time = moment().add(1, "days")
-var dayAhead2Time = moment().add(2, "days")
-debugger;
+// .then(function(data) {
+//   console.log(data)
+//   uvi = data.daily[0].uvi
+//   appendTextVeryHighRisk = `<p class=" d-inline tooltips"><span class="very-high-uvi">UVI (very-high risk): ${uvi}</span>
+//   <span class="tooltiptext">Minimize sun exposure between 10am -4pm. Use SPF 15+ sunblock and apply every 1.5 hours.</span></p>`
+//   appendTextHighRisk = `<p class="d-inline tooltips"><span class="high-uvi"> UVI (high risk): ${uvi}</span>
+//   <span class="tooltiptext">Generously apply broad spectrum SPF 15+ sunscreen every 1.5 hours, even on cloudy days, and after swimming or sweating. Bright surfaces, such as sand, water, and snow, will increase UV exposure.</span></p>`
+//   appendTextMediumRisk = `<p class="d-inline tooltips"><span class="mid-uvi"> UVI (medium risk): ${uvi}</span>
+//   <span class="tooltiptext">Generously apply broad spectrum SPF 15+ sunscreen every 1.5 hours, even on cloudy days, and after swimming or sweating. Bright surfaces, such as sand, water, and snow, will increase UV exposure.</span></p>`
+//   appendTextLowRisk = `<div class="d-inline tooltips"><span class="low-uvi"> UVI (low risk): ${uvi}</span>
+//     <span class="tooltiptext">Wear sunglasses on bright days. If you burn easily, cover up and use broad spectrum SPF 15+ sunscreen. Bright surfaces, sand, water, and snow, will increase UV exposure.</span></div>`
+//   appendTextUltraRisk = `<p class="d-inline tooltips"><span class="ultra-uvi"> UVI (Ultra risk): ${uvi}</span>
+//   <span class="tooltiptext">Try to avoid sun exposure between 10 a.m. and 4 p.m. If outdoors, seek shade and wear sun-protective clothing, a wide-brimmed hat, and UV-blocking sunglasses. Generously apply broad spectrum SPF 15+ sunscreen</span></p>`
+//   // $('.card-text')[2].after(`UV Index: ${uvi}`)
+// if(uvi >= 0 && uvi < 3) {
+//   $('#weather-data').append(appendTextLowRisk)
+
+// } else if(uvi>=3 && uvi < 6) {
+//   $('#weather-data').append(appendTextMediumRisk)
+
+// }else if(uvi>=6 && uvi < 8) {
+//   $('#weather-data').append(appendTextHighRisk)
+// }else if(uvi>=8 && uvi < 11) {
+//   $('#weather-data').append(appendTextVeryHighRisk)
+
+// } else if(uvi>=11) {
+//   $('#weather-data').append(appendTextUltraRisk);
+// }
+
+
 // if(dayAhead1Weather == "Clear") {
 //   $('#weatherAhead1').prepend(`<h4>${dayAhead1Time.format('M/DD/YY')}</h4>`)
 //   $('#forecastText1').html(`Morning Temp: ${dayAhead1TempMornF}&#176;F<br>
@@ -123,7 +147,51 @@ debugger;
 //   $('#forecastText1').append(`<p>Wind:${Math.floor(dayAhead1.wind_speed)}MPH</p>`)
 //   $('#forecast-img-1').attr("src","assets/img/cloudy-img.png")
 //  }
+
 var weatherCards = $('.card')
+
+for(var t=1; t< weatherData.length -2; t++){
+  eachDay = moment().add(t, "days")
+  $(`#weatherAhead${t+1}`).prepend(`<h4>${weatherData[t].name}</h4>`)
+  $(`#forecastText${t+1}`).html(`Morning Temp: ${weatherData[t].temperature}&#176;F`)
+  $(`#forecastText${t+1}`).append(`<p>Precipitation:${weatherData[t].probabilityOfPrecipitation.value ?? 0}%</p>`)
+  $(`#forecastText${t+1}`).append(`<p>Wind:${weatherData[t].windSpeed}</p>`)
+  if(weatherData[t].shortForecast.toLowerCase().includes("cloudy")){
+    $(`#forecast-img-${t+1}`).attr("src","./assets/img/cloudy-img.png")
+    $(`#forecast-img-${t+1}`).remove();
+    var newNode = document.createElement("img");
+    newNode.id = `forecast-img-${t+1}`;
+    newNode.src = './assets/img/cloudy-img.png';
+    newNode.classList.add("custom-images");
+    $(`#weatherAhead${t+1}`).prepend(newNode);
+  } else if(weatherData[t].shortForecast.toLowerCase().includes("sunny")){
+    $(`#forecast-img-${t+1}`).attr("src","./assets/img/sun-img.jpg")
+    $(`#forecast-img-${t+1}`).remove();
+    var newNode = document.createElement("img");
+    newNode.id = `forecast-img-${t+1}`;
+    newNode.src = './assets/img/sun-img.jpg';
+    newNode.classList.add("custom-images");
+    $(`#weatherAhead${t+1}`).prepend(newNode);
+  } else if(weatherData[t].shortForecast.toLowerCase().includes("rain")){
+    $(`#forecast-img-${t+1}`).attr("src","./assets/img/rainy-img.png")
+    $(`#forecast-img-${t+1}`).remove();
+    var newNode = document.createElement("img");
+    newNode.id = `forecast-img-${t+1}`;
+    newNode.src = './assets/img/rainy-img.png';
+    newNode.classList.add("custom-images");
+    $(`#weatherAhead${t+1}`).prepend(newNode);
+  } else {
+    $(`#forecast-img-${t+1}`).attr("src","./assets/img/sun-img.jpg")
+    $(`#forecast-img-${t+1}`).remove();
+    var newNode = document.createElement("img");
+    newNode.id = `forecast-img-${t+1}`;
+    newNode.src = './assets/img/sun-img.jpg';
+    newNode.classList.add("custom-images");
+    $(`#weatherAhead${t+1}`).prepend(newNode);
+  }
+}
+
+
 weatherCards.each( function(i) {
   debugger;
   currentConditions = data.daily[i].weather[0].main
@@ -195,11 +263,7 @@ weatherCards.each( function(i) {
 //   $('#forecast-img-1').attr("src","assets/img/cloudy-img.png")
 //  }
 
-  console.log(dayAhead2)
-  console.log(dayAhead3)
-  console.log(dayAhead4)
-  console.log(dayAhead5)
-}) }
+}
 
 $('.btn-outline-secondary').on("click", function(e) {
   e.preventDefault();
