@@ -187,23 +187,17 @@ async function startSearch(city) {
   //  }
 
   var weatherCards = $(".card");
-
+  for (var b = 0; b < weatherData.length - 2; b++) {
+    $(`#weatherAhead${t+1}`).html("")
+  }
   for (var t = 1; t < weatherData.length - 2; t++) {
     eachDay = moment().add(t, "days");
-    $(`#weatherAhead${t + 1}`).prepend(`<h4>${weatherData[t].name}</h4>`);
+    $(`#forecastTitle${t + 1}`).text(`${weatherData[t].name}`);
     $(`#forecastText${t + 1}`).html(
-      `Temperature: ${weatherData[t].temperature}&#176;F`
-    );
-    $(`#forecastText${t + 1}`).append(
-      `<p>Forecast: ${weatherData[t].shortForecast}</p>`
-    );
-    $(`#forecastText${t + 1}`).append(
-      `<p>Precipitation: ${
+      `<p>Temperature: ${weatherData[t].temperature}&#176;F</p>
+      <p>Forecast: ${weatherData[t].shortForecast}</p><p>Precipitation: ${
         weatherData[t].probabilityOfPrecipitation.value ?? 0
-      }%</p>`
-    );
-    $(`#forecastText${t + 1}`).append(
-      `<p>Wind: ${weatherData[t].windSpeed}</p>`
+      }%<p><p>Wind: ${weatherData[t].windSpeed}</p>`
     );
 
     if (
