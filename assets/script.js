@@ -2,7 +2,7 @@ $("document").ready(() => {
   document.addEventListener("keydown", (evt) => {
     console.log(evt.key);
     if (evt.key == "Enter") {
-      startSearch();
+      startSearch($("#cityInput").val());
     }
   });
 });
@@ -18,53 +18,70 @@ var oneCallApiRequest;
 
 $("#searchBtn").on("click", function (event) {
 
-  startSearch(event);
+  startSearch($("#cityInput").val());
 });
 
 $(function () {
   $('[data-toggle="tooltip"]').tooltip();
 });
 
-selectedCity = $("#cityInput").val();
 // start search function.
 async function startSearch(city) {
   // show the weather ahead section.
-  if ($("#cityInput").val() === "" || city === "") {
-    alert("You must enter a city or select a city.")
+  if ($("#cityInput").val() === "" && city === "") {
+    alert("You must enter a city or select a city.");
     return;
   }
   if (!$("#weatherAheadSection").hasClass("d-none")) {
     $("#weatherAheadSection").addClass("d-none");
   }
   if ($(".loader").hasClass("d-none")) {
-      $(".loader").removeClass("d-none");
+    $(".loader").removeClass("d-none");
   }
-  debugger;
   $(".col-sm-3 h4").html("");
   $(".card-text").html("");
   $(".card-subtitle").html("");
   $("#weather-data").html("");
-  if (event.target.classList.contains("btn-outline-secondary") !== true) {
+  if (city === "" || city === null) {
     selectedCity = $("#cityInput").val();
+  } else {
+    selectedCity = city;
   }
-  debugger;
+  if (selectedCity.split(",").length < 2) {
+    alert("you must provide a city and state in the format {City},{State Abbreviation}")
+    return;
+  }
+  if (selectedCity === "Washington, D.C.")
+    selectedCity = "Washington D.C., District of Columbia";
   cityArray = selectedCity.split(" ");
   cityName = selectedCity.split(",")[0];
-  stateName = selectedCity.split(",")[1];
-  debugger;
+  if(selectedCity.split(",")[1] != null)
+    stateName = selectedCity.split(",")[1].trim();
+  // create API request to get coordinate data.
   coordApiRequest = `https://geocode.maps.co/search?q=${cityName},${stateName}&api_key=67816f5abff53064370654ipx8e37ed`;
-
+  // make request to get coordinate data.
+  const startTime = new Date();
   let result = await fetch(coordApiRequest);
+  // if this request is unsuccessful throw and exception.
   if (!result.ok) {
     throw new Error(`Response status ${result.status} is bad.`);
   }
+  // await json for coordinates.
   const json = await result.json();
-
+  // how long did the first request take?
+  const firstCall = new Date();
+  // how long did the 1st call take?
+  console.log(
+    `1st call for latitude and longitude took ${firstCall.getTime() - startTime.getTime()}ms `
+  );
+  // store latitude and longitudinal coordinates in variables.
   var lat = json[0].lat;
   var long = json[0].lon;
+  // store the city in a variable.
   var targetCity = json[0].display_name.split(",")[0];
 
   // fetch grid office and grid x,y.
+  const secondCallStart = new Date();
   let weatherRequest = `https://api.weather.gov/points/${lat},${long}`;
   // execute request
   var weatherGrid = await fetch(weatherRequest)
@@ -74,12 +91,15 @@ async function startSearch(city) {
     .then((data) => {
       return data;
     });
+  const secondCallEnd = new Date();
+  console.log(`Second call for grid points took ${secondCallEnd.getTime() - secondCallStart.getTime()}ms `);
+  
   const gridOffice = weatherGrid.properties.gridId;
   const gridCoordX = weatherGrid.properties.gridX;
   const gridCoordY = weatherGrid.properties.gridY;
 
   var newApiRequest = `https://api.weather.gov/gridpoints/${gridOffice}/${gridCoordX},${gridCoordY}/forecast`;
-  // fetch the data we need from weather.
+  // fetch the data we need from gov weather site.
   let response = await fetch(newApiRequest)
     .then((resp) => {
       return resp.json();
@@ -212,34 +232,30 @@ async function startSearch(city) {
     ) {
       // (clear) and nighttime
       setImgCard("nighttime.jpg", t, weatherData[t].isDaytime);
-    }
-    else if (
+    } else if (
       weatherData[t].shortForecast.toLowerCase().includes("rain") &&
       weatherData[t].isDaytime == true
-      ) {
+    ) {
       // daytime and rainy
       setImgCard("rainy-img-no-bg.png", t, weatherData[t].isDaytime);
-    }
-    else if (
+    } else if (
       weatherData[t].shortForecast.toLowerCase().includes("rain") &&
       weatherData[t].isDaytime == false
-      ) {
-        // rainy and nighttime
+    ) {
+      // rainy and nighttime
       setImgCard("rainy-img-no-bg.png", t, weatherData[t].isDaytime);
-    }
-    else if (
+    } else if (
       weatherData[t].shortForecast.toLowerCase().includes("snow") &&
       weatherData[t].isDaytime == true
-      ) {
+    ) {
       // snow and daytime
       setImgCard("snowflake.png", t, weatherData[t].isDaytime);
-    }
-    else if (
+    } else if (
       weatherData[t].shortForecast.toLowerCase().includes("snow") &&
       weatherData[t].isDaytime == false
-      ) {
-        // snow and nighttime
-        setImgCard("snowflake.png", t, weatherData[t].isDaytime);
+    ) {
+      // snow and nighttime
+      setImgCard("snowflake.png", t, weatherData[t].isDaytime);
     } else if (
       weatherData[t].shortForecast.toLowerCase().includes("fog") &&
       weatherData[t].isDaytime == true
