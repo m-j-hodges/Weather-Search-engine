@@ -11,6 +11,12 @@ body {
   height: 100px;
 }
 
+
+.custom-card:hover{
+  background-color: #D3D3D3;
+  box-shadow: 2px 4px 4px slategray;
+}
+
 .loader {
   border: 16px solid #f3f3f3;
   border-radius: 50%;
@@ -31,6 +37,7 @@ body {
 }
 .custom-images {
   width: 100px;
+  aspect-ratio: 4/3;
 }
 
 h4 {

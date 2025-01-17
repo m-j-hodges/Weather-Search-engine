@@ -17,7 +17,7 @@ var coordApiRequest = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName
 var oneCallApiRequest;
 
 $("#searchBtn").on("click", function (event) {
-  $(".loader").removeClass('d-none')
+
   startSearch(event);
 });
 
@@ -27,12 +27,18 @@ $(function () {
 
 selectedCity = $("#cityInput").val();
 // start search function.
-async function startSearch() {
+async function startSearch(city) {
   // show the weather ahead section.
+  if ($("#cityInput").val() === "" || city === "") {
+    alert("You must enter a city or select a city.")
+    return;
+  }
   if (!$("#weatherAheadSection").hasClass("d-none")) {
     $("#weatherAheadSection").addClass("d-none");
   }
-
+  if ($(".loader").hasClass("d-none")) {
+      $(".loader").removeClass("d-none");
+  }
   debugger;
   $(".col-sm-3 h4").html("");
   $(".card-text").html("");
@@ -184,99 +190,71 @@ async function startSearch() {
       weatherData[t].shortForecast.toLowerCase().includes("cloudy") &&
       weatherData[t].isDaytime == true
     ) {
-      $(`#forecast-img-${t + 1}`).remove();
-      var newNode = document.createElement("img");
-      newNode.id = `forecast-img-${t + 1}`;
-      newNode.src = "./assets/img/cloudy-img-no-bg.png";
-      newNode.classList.add("custom-images");
-      $(`#weatherAhead${t + 1}`).prepend(newNode);
+      // cloudy and is daytime
+      setImgCard("cloudy-img-no-bg.png", t, weatherData[t].isDaytime);
     } else if (
       weatherData[t].shortForecast.toLowerCase().includes("cloudy") &&
       weatherData[t].isDaytime == false
     ) {
-      $(`#forecast-img-${t + 1}`).remove();
-      var newNode = document.createElement("img");
-      newNode.id = `forecast-img-${t + 1}`;
-      newNode.src = "./assets/img/cloudy-img-no-bg.png";
-      newNode.style = "background-color:grey";
-      newNode.classList.add("custom-images");
-      $(`#weatherAhead${t + 1}`).prepend(newNode);
-    } else if (weatherData[t].shortForecast.toLowerCase().includes("sunny")) {
-      $(`#forecast-img-${t + 1}`).remove();
-      var newNode = document.createElement("img");
-      newNode.id = `forecast-img-${t + 1}`;
-      newNode.src = "./assets/img/sun-img.jpg";
-      newNode.classList.add("custom-images");
-      $(`#weatherAhead${t + 1}`).prepend(newNode);
+      // cloudy and is nighttime
+      setImgCard("cloudy-img-no-bg.png", t, weatherData[t].isDaytime);
+    } else if (
+      weatherData[t].shortForecast.toLowerCase().includes("sunny") &&
+      weatherData[t].isDaytime == true
+    ) {
+      // sunny and daytime
+      setImgCard("sun-img.jpg", t, weatherData[t].isDaytime);
     }
     // nighttime and clear (not sunny)
     else if (
       weatherData[t].shortForecast.toLowerCase().includes("clear") &&
       weatherData[t].isDaytime == false
     ) {
-      $(`#forecast-img-${t + 1}`).remove();
-      var newNode = document.createElement("img");
-      newNode.id = `forecast-img-${t + 1}`;
-      newNode.src = "./assets/img/nighttime.jpg";
-      newNode.classList.add("custom-images");
-      $(`#weatherAhead${t + 1}`).prepend(newNode);
+      // (clear) and nighttime
+      setImgCard("nighttime.jpg", t, weatherData[t].isDaytime);
     }
-    // daytime and rainy
     else if (
       weatherData[t].shortForecast.toLowerCase().includes("rain") &&
       weatherData[t].isDaytime == true
-    ) {
-      $(`#forecast-img-${t + 1}`).remove();
-      var newNode = document.createElement("img");
-      newNode.id = `forecast-img-${t + 1}`;
-      newNode.src = "./assets/img/rainy-img-no-bg.png";
-      newNode.classList.add("custom-images");
-      $(`#weatherAhead${t + 1}`).prepend(newNode);
+      ) {
+      // daytime and rainy
+      setImgCard("rainy-img-no-bg.png", t, weatherData[t].isDaytime);
     }
-    // rainy and nighttime
     else if (
       weatherData[t].shortForecast.toLowerCase().includes("rain") &&
       weatherData[t].isDaytime == false
-    ) {
-      $(`#forecast-img-${t + 1}`).remove();
-      var newNode = document.createElement("img");
-      newNode.id = `forecast-img-${t + 1}`;
-      newNode.src = "./assets/img/rainy-img-no-bg.png";
-      newNode.classList.add("custom-images");
-      newNode.style = "background-color:grey;";
-      $(`#weatherAhead${t + 1}`).prepend(newNode);
+      ) {
+        // rainy and nighttime
+      setImgCard("rainy-img-no-bg.png", t, weatherData[t].isDaytime);
     }
-    // snow and daytime
     else if (
       weatherData[t].shortForecast.toLowerCase().includes("snow") &&
       weatherData[t].isDaytime == true
-    ) {
-      $(`#forecast-img-${t + 1}`).remove();
-      var newNode = document.createElement("img");
-      newNode.id = `forecast-img-${t + 1}`;
-      newNode.src = "./assets/img/snowflake.png";
-      newNode.classList.add("custom-images");
-      $(`#weatherAhead${t + 1}`).prepend(newNode);
+      ) {
+      // snow and daytime
+      setImgCard("snowflake.png", t, weatherData[t].isDaytime);
     }
-    // snow and nighttime
     else if (
       weatherData[t].shortForecast.toLowerCase().includes("snow") &&
       weatherData[t].isDaytime == false
+      ) {
+        // snow and nighttime
+        setImgCard("snowflake.png", t, weatherData[t].isDaytime);
+    } else if (
+      weatherData[t].shortForecast.toLowerCase().includes("fog") &&
+      weatherData[t].isDaytime == true
     ) {
-      $(`#forecast-img-${t + 1}`).remove();
-      var newNode = document.createElement("img");
-      newNode.id = `forecast-img-${t + 1}`;
-      newNode.src = "./assets/img/snowflake.png";
-      newNode.style = "background-color:black;";
-      newNode.classList.add("custom-images");
-      $(`#weatherAhead${t + 1}`).prepend(newNode);
+      // if the weather forecast is for fog and it's daytime.
+      setImgCard("fog.png", t, weatherData[t].isDaytime);
+    } else if (
+      weatherData[t].shortForecast.toLowerCase().includes("fog") &&
+      weatherData[t].isDaytime == false
+    ) {
+      // if the weather forecast is for fog and it's night time.
+      setImgCard("fog.png", t, weatherData[t].isDaytime);
     } else {
-      $(`#forecast-img-${t + 1}`).remove();
-      var newNode = document.createElement("img");
-      newNode.id = `forecast-img-${t + 1}`;
-      newNode.src = "./assets/img/sun-img.jpg";
-      newNode.classList.add("custom-images");
-      $(`#weatherAhead${t + 1}`).prepend(newNode);
+      // in all other cases, just show it's sunny
+      setImgCard("sun-img.jpg", t, weatherData[t].isDaytime);
     }
   }
 
@@ -284,40 +262,26 @@ async function startSearch() {
   if ($("#weatherAheadSection").hasClass("d-none")) {
     $("#weatherAheadSection").removeClass("d-none");
   }
-  $(".loader").addClass("d-none")
+  $(".loader").addClass("d-none");
+}
 
-  //  if(dayAhead1Weather == "Clear") {
-  //   $('#weatherAhead1').prepend(`<h4>${dayAhead1Time.format('M/DD/YY')}</h4>`)
-  //   $('#forecastText1').html(`Morning Temp: ${dayAhead1TempMornF}&#176;F<br>
-  //   High Temp: ${dayAhead1TempMaxF}&#176;F<br>
-  //   Evening Temp: ${dayAhead1TempEvenF}&#176;C`)
-  //   $('#forecastText1').append(`<p>Humidity:${dayAhead1.humidity}%</p>`)
-  //   $('#forecastText1').append(`<p>Wind:${Math.floor(dayAhead1.wind_speed)}MPH</p>`)
-  //    $('#forecast-img-1').attr("src","./assets/img/sun-img.jpg")
-  //  }
-  //  else if(dayAhead1Weather == "Clouds") {
-  //   $('#weatherAhead1').prepend(`<h4>${dayAhead1Time.format('M/DD/YY')}</h4>`)
-  //   $('#forecastText1').html(`Morning Temp: ${dayAhead1TempMornF}&#176;F<br>
-  //   High Temp: ${dayAhead1TempMaxF}&#176;F<br>
-  //   Evening Temp: ${dayAhead1TempMaxF}&#176;F`)
-  //   $('#forecastText1').append(`<p>Humidity:${dayAhead1.humidity}%</p>`)
-  //   $('#forecastText1').append(`<p>Wind:${Math.floor(dayAhead1.wind_speed)}MPH</p>`)
-  //   $('#forecast-img-1').attr("src","assets/img/cloudy-img.png")
-  //  }
-  //  else if(dayAhead1Weather == "Rainy" || dayAhead1Weather == "rain") {
-  //   $('#weatherAhead1').prepend(`<h4>${dayAhead1Time.format('M/DD/YY')}</h4>`)
-  //   $('#forecastText1').html(`Morning Temp: ${dayAhead1TempMornF}&#176;F<br>
-  //   High Temp: ${dayAhead1TempMaxF}&#176;F<br>
-  //   Evening Temp: ${dayAhead1TempEvenF}&#176;F`)
-  //   $('#forecastText1').append(`<p>Humidity:${dayAhead1.humidity}%</p>`)
-  //   $('#forecastText1').append(`<p>Wind:${Math.floor(dayAhead1.wind_speed)}MPH</p>`)
-  //   $('#forecast-img-1').attr("src","assets/img/cloudy-img.png")
-  //  }
+// function to auto-create the image cards.
+
+function setImgCard(weatherImgUrl, index, isDaytime) {
+  $(`#forecast-img-${index + 1}`).remove();
+  var newNode = document.createElement("img");
+  newNode.id = `forecast-img-${index + 1}`;
+  newNode.src = `./assets/img/${weatherImgUrl}`;
+  if (!isDaytime) {
+    newNode.style = "background-color:black;";
+  }
+  newNode.classList.add("custom-images");
+  $(`#weatherAhead${index + 1}`).prepend(newNode);
 }
 
 $(".btn-outline-secondary").on("click", function (e) {
   e.preventDefault();
-  var targetedText = $(e.target).text();
+  var targetedText = $(e.target).text().trim();
   $("h4").html("");
   console.log(targetedText);
   console.log("clicked!");
@@ -325,50 +289,3 @@ $(".btn-outline-secondary").on("click", function (e) {
   debugger;
   startSearch(selectedCity);
 });
-
-// .then(function() {
-//   weatherApiRequest = `https://api.openweathermap.org/data/2.5/weather?lat=${coordLatitude}&lon=${coordLongitude}&appid=5e4e76067c9efbd530372ae03978df87`
-//   fetch(weatherApiRequest)})
-//   .then( function(response) {
-//     return response.json();
-//   })
-//   .then( function(weatherData) {
-//     console.log(weatherData)
-
-//   })
-
-// function oneCallApi(oneCallApiRequest) {
-// fetch(oneCallApiRequest)
-// .then(function (response) {
-//   return response.json()
-// })
-// .then(function(data) {
-//   console.log(data)
-
-// })
-
-// }
-// .then(response => response.json())
-// .then(function(data2) {
-//   console.log(data2);
-// debugger
-// })
-// .catch(err => {
-//   console.log('Request failed')
-// })
-
-// if( cityArrayLength <= 2 && cityArray !== " ") {
-//   var cityArrayFinal = cityArray[1].toString().split(",")
-//   var cityArrayNew = `${cityArray[0]} ${cityArrayFinal[0]}`
-//   debugger
-//   return cityArrayNew
-// } else if (cityArrayLength < 2) {
-//   finalCityInput = cityArray.split(',')[0]
-// }
-//   else {
-//   finalCityInput = `${cityArray[0]} ${cityArray[1]} $(${cityArray[2]})`
-//   finalStateInput = stateArray
-//   return finalCityInput, finalStateInput
-// }
-
-// weatherApiAddress = `http://api.openweathermap.org/geo/1.0/direct?q=${cityArrayNew},$"&appid=5e4e76067c9efbd530372ae03978df87`
